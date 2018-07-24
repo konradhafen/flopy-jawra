@@ -5,6 +5,13 @@ import csv
 
 bratCaps = ['05', '25', '50', '100']
 huc8s = [str(16010101), str(16010102), str(16010201), str(16010202), str(16010203), str(16010204)]
+kv = []
+kh = []
+kvex = []
+khex = []
+fc = []
+por = []
+yld = []
 for huc8 in huc8s:
 #bratCaps = ['05']
 #for bratCap in bratCaps:
@@ -20,19 +27,11 @@ for huc8 in huc8s:
     # row = ["huc12", "brat_cap","surface_lo", "surface_mid", "surface_hi", "gw_lo", "gw_mid", "gw_hi"]
     # writer.writerow(row)
 
-    kv = []
-    kh = []
-    kvex = []
-    khex = []
-    fc = []
-    por = []
-    yld = []
-
     subdirs = [ name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name)) ]
     for subdir in subdirs:
         # print (subdir + "/" + inDir + "/por_vbfac.tif")
         if os.path.exists(subdir + "/" + inDir + "/por_vbfac.tif"):
-            print subdir + " running " + os.path.relpath(subdir, path)
+            # print subdir + " running " + os.path.relpath(subdir, path)
             os.chdir(subdir)
 
             porDs = gdal.Open(inDir + "/por_vbfac.tif")
@@ -51,6 +50,7 @@ for huc8 in huc8s:
             kvData[kvData<0.0] = np.nan
             yieldData = porData - fcData
 
+            # print np.nanmean(kvData)
             kv.append(np.nanmean(kvData))
             kh.append(np.nanmean(khData))
             kvex.append(np.nanmin(kvData))
@@ -63,6 +63,7 @@ for huc8 in huc8s:
             por.append(np.nanmax(porData))
             yld.append(np.nanmin(yieldData))
             yld.append(np.nanmax(yieldData))
+            # print len(kv), len(kh), len(kvex), len(khex), len(por), len(fc), len(yld)
 
             os.chdir(path)
 
